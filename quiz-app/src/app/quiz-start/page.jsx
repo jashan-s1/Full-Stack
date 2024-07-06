@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import useGlobalContextProvider from '@/app/ContextApi';
 import QuizStartHeader from '@/app/Components/QuizStartPage/QuizStartHeader';
 import QuizStartQuestions from '@/app/Components/QuizStartPage/QuizStartQuestions';
@@ -9,12 +9,18 @@ import Image from 'next/image';
 function Page() {
     const { allQuizzes, quizToStartObject } = useGlobalContextProvider();
     const { selectQuizToStart } = quizToStartObject;
+    const [parentTimer, setParentTimer]= useState(5);
+
 
     useEffect(() => {
         if (selectQuizToStart === null) {
             window.location.href = '/';
         }
     }, [selectQuizToStart]);
+
+    function onUpdateTime(currentTime){
+        setParentTimer(currentTime);  
+    }
 
     return (
         <div className="poppins flex flex-col px-24 mt-[35px] ">
@@ -26,9 +32,9 @@ function Page() {
                 </div>
             ) : (
                 <>
-                    <QuizStartHeader />
+                    <QuizStartHeader parentTimer={parentTimer} />
                     <div className="mt-10 flex items-center justify-center">
-                        <QuizStartQuestions />
+                        <QuizStartQuestions  onUpdateTime={onUpdateTime}/>
                     </div>
                 </>
             )}

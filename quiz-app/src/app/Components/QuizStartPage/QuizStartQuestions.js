@@ -5,7 +5,8 @@ import React, { useEffect, useState } from 'react';
 import useGlobalContextProvider from '@/app/ContextApi';
 import { Exo } from 'next/font/google';
 
-function QuizStartQuestions(props) {
+function QuizStartQuestions({onUpdateTime}) {
+    const time=10;
 
     const { quizToStartObject , allQuizzes , setAllQuizzes } = useGlobalContextProvider();
     const { selectQuizToStart } = quizToStartObject;
@@ -15,7 +16,43 @@ function QuizStartQuestions(props) {
     const [indexOfQuizSelected, setIndexOfQuizSelected]= useState(null);
     const [isQuizEnded, setIsQuizEnded] =useState(false);
 
-    const [timer, setTimer]= useState(5);
+    const [timer, setTimer]= useState(time);
+    let interval;
+
+    function startTimer(){
+        clearInterval(interval);
+        setTimer(time);
+
+        interval=setInterval(()=>{
+            setTimer((currentTime)=>{
+                onUpdateTime(currentTime);
+                if(currentTime===0){
+                    clearInterval(interval);
+                    return 0;
+                }
+                return currentTime -1;
+            })
+        },1000);
+    }
+
+    useEffect(()=>{
+        startTimer();
+        return ()=>{
+            clearInterval(interval);
+        };
+    },[currentQuestionIndex]);
+
+    useEffect(()=>{
+        if(timer ===0){
+            if(currentQuestionIndex !== quizQuestions.length - 1){
+                setTimeout(()=>{
+                    setCurrentQuestionIndex((current)=>{
+                        return current +1;
+                    });
+                },1000);
+            }
+        }
+    },[timer]);
 
     useEffect(()=>{
         const interval =setInterval(()=>{
