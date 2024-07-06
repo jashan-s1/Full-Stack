@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+header {
+  margin-bottom: 0; /* Ensure no margin-bottom on header */
+}
+
+main {
+  margin-top: 0; /* Ensure no margin-top on main */
+}
+
+.poppins{
+  font-family: var(--font-poppins);
+  }
+
+.poppins-regular {
+  font-weight: 400; /* Regular weight */
+}
+.poppins-light {
+  font-weight: 300; /* Light weight */
+}
+
+.navbar-shadow {
+  box-shadow: 0 4px 2px -2px rgb(216, 203, 203); /* Adjust the shadow to your preference */
+}
