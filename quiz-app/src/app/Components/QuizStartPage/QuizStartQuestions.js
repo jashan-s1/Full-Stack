@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import useGlobalContextProvider from '@/app/ContextApi';
 import Image from 'next/image';
+import toast,{Toaster} from 'react-hot-toast';
 
 function QuizStartQuestions({onUpdateTime}) {
     const time=20;
@@ -43,7 +44,7 @@ function QuizStartQuestions({onUpdateTime}) {
     },[currentQuestionIndex]);
 
     useEffect(()=>{
-        if(timer ===0){
+        if(timer ===0 && !isQuizEnded){
 
             const currentQuizzes=[...allQuizzes];
             currentQuizzes[indexOfQuizSelected].quizQuestions[
@@ -122,7 +123,7 @@ function QuizStartQuestions({onUpdateTime}) {
             allQuizzes[indexOfQuizSelected].quizQuestions[currentQuestionIndex]
                 .answeredResult === -1
         ) {
-            console.log('Please select an answer');
+            toast.error('Please select an answer');
             return;
         }
     
@@ -139,18 +140,33 @@ function QuizStartQuestions({onUpdateTime}) {
             allQuizzes[indexOfQuizSelected].quizQuestions[
                 currentQuestionIndex
             ].statistics.incorrectAttempts += 1;
-            console.log('Answer is incorrect');
-        } else {
+            toast.error('Incorrect Answer!');
+
+            if(currentQuestionIndex !== quizQuestions.length -1){
+                setTimeout(()=>{
+                    setCurrentQuestionIndex((current)=> current +1);
+                    setSelectedChoice(null);
+                },600);
+            } else {
+                setTimer(0);
+                clearInterval(interval);
+                setIsQuizEnded(true);
+            }
+
+            return;
+        }
+
             allQuizzes[indexOfQuizSelected].quizQuestions[
                 currentQuestionIndex
             ].statistics.correctAttempts += 1;
             setScore((prevState) => prevState + 1);
-            console.log('Answer is correct');
-        }
+            toast.success('Awesome!');
     
         // To avoid going out of the index bound
         if (
             currentQuestionIndex === allQuizzes[indexOfQuizSelected].quizQuestions.length - 1
+            && allQuizzes[indexOfQuizSelected].quizQuestions[currentQuestionIndex]
+            .correctAnswer
         ) {
             setTimer(0);
             clearInterval(interval);
@@ -158,15 +174,25 @@ function QuizStartQuestions({onUpdateTime}) {
             return;
         }
     
-        // Increment the currentQuestionIndex by 1 to go to the next question
-        setCurrentQuestionIndex((current) => current + 1);
-        setSelectedChoice(null);
-    }
-    
 
+        setTimeout(()=>{
+            setCurrentQuestionIndex((current)=>current+1);
+            setSelectedChoice(null);
+        },1000);
+       
+    }
     return (
 
         <div className="poppins rounded-sm m-9 w-9/12 ">
+            <Toaster
+            toastOptions={{
+                className:'',
+                duration :1500,
+                style:{
+                    padding : '12px',
+                },
+            }}
+            />
             {/* The Question Part */}
             <div className="flex items-center gap-2">
                 <div className="bg-green-700 flex justify-center items-center rounded-md w-11 h-11">

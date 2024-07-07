@@ -14,10 +14,16 @@ return (
 
 <span className="text-[17px] font-light">
 
-Moving to Home to start your journey here ...
+Click below to begin your journey here ...
 
 </span>
 
+{/* button */}
+
+<button className="p-4 px-5 text-white text-[15px] bg-green-700 rounded-md">
+
+Create my first Quiz
+</button>
 </div>
 );
 }
